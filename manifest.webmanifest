@@ -1,15 +1,14 @@
 {
   "name": "Barrage Setup Generator",
-  "short_name": "BSG",
-  "description": "Random setup generator for Barrage",
-  "lang": "it",
-  "start_url": "./index.html",
+  "short_name": "Barrage Setup",
+  "description": "Generatore di setup per Barrage",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1b211f",
   "theme_color": "#1b211f",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
   ]
 }
