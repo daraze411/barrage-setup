@@ -335,8 +335,9 @@ const LAKES={
 };
 const ZONES=["M","H","P"];
 /* Private Buildings (The Leeghwater Project): 5 of 10 drawn each game */
-const BUILDINGS=["Cofferdam","Development Office","Research Lab","Loan Agency","Energy Relay Field","Robot Factory","Financial Division","Control Station","Wind Farm","Customer Office","Pump Station"];
-const BLD_NILE="Pump Station"; /* needs The Nile Affair map */
+const BUILDINGS=["Cofferdam","Development Office","Research Lab","Loan Agency","Energy Relay Field","Robot Factory","Financial Division","Control Station","Wind Farm","Customer Office","Pump Station","Heliport"];
+/* buildings that need a specific map: name -> i18n key of the note */
+const BLD_REQ={"Pump Station":"nileReq","Heliport":"coloradoReq"};
 
 /* ===== i18n ===== */
 const T={
@@ -349,7 +350,7 @@ it:{lang:"Lingua",sub:"Executive Officer, nazioni e dighe neutrali iniziali per 
   results:"Assegnazioni",cert:"Concessione",player:"Giocatore",xo:"Executive Officer",base:"Gioco base",
   empty:"Le concessioni compariranno qui dopo il sorteggio.",stale:"Impostazioni cambiate: lancia un nuovo setup.",
   rerollPairs:"Riestrai XO + nazioni",rerollDams:"Riestrai dighe neutrali",copy:"Copia risultati",copied:"Risultati copiati",copyFail:"Copia non riuscita: seleziona il testo a mano",
-  bld:"Edifici privati",bldHint:"Piazza queste 5 tessere Edificio Privato sulla plancia Azioni Aggiuntive; le altre tornano nella scatola.",nileReq:"Richiede la mappa The Nile Affair",bldWait:"Gli edifici privati vengono estratti insieme al setup.",rerollBld:"Riestrai edifici privati",dams:"Dighe neutrali",damsTag:"1–4 giocatori",damsHint:"Una diga per fascia. Collocala nella parte bassa del lago indicato; i laghi sono numerati da sinistra.",
+  bld:"Edifici privati",bldHint:"Piazza queste 5 tessere Edificio Privato sulla plancia Azioni Aggiuntive; le altre tornano nella scatola.",nileReq:"Richiede la mappa The Nile Affair",coloradoReq:"Richiede la mappa The Colorado Connection",bldWait:"Gli edifici privati vengono estratti insieme al setup.",rerollBld:"Riestrai edifici privati",dams:"Dighe neutrali",damsTag:"1–4 giocatori",damsHint:"Una diga per fascia. Collocala nella parte bassa del lago indicato; i laghi sono numerati da sinistra.",
   zone:{M:"Montagna",H:"Collina",P:"Pianura"},level:n=>`Diga di livello ${n}`,lvShort:n=>`liv. ${n}`,
   noDams:"Con 5 giocatori non si piazzano dighe neutrali.",damsWait:"Le dighe vengono sorteggiate insieme al setup.",
   duel:"Setup mappa Duel",footer:"Strumento non ufficiale per Barrage. Nomi e marchi appartengono ai rispettivi proprietari.",
@@ -364,7 +365,7 @@ en:{lang:"Language",sub:"Executive Officers, nations and starting neutral dams f
   results:"Assignments",cert:"Concession",player:"Player",xo:"Executive Officer",base:"Base game",
   empty:"Concessions will appear here after the draw.",stale:"Settings changed: launch a new setup.",
   rerollPairs:"Reroll XO + nations",rerollDams:"Reroll neutral dams",copy:"Copy results",copied:"Results copied",copyFail:"Copy failed: select the text manually",
-  bld:"Private Buildings",bldHint:"Place these 5 Private Building tiles on the Extra Management board; return the others to the box.",nileReq:"Requires The Nile Affair map",bldWait:"Private Buildings are drawn with the setup.",rerollBld:"Reroll Private Buildings",dams:"Neutral dams",damsTag:"1–4 players",damsHint:"One dam per area. Place it in the lower part of the marked lake; lakes are numbered from the left.",
+  bld:"Private Buildings",bldHint:"Place these 5 Private Building tiles on the Extra Management board; return the others to the box.",nileReq:"Requires The Nile Affair map",coloradoReq:"Requires The Colorado Connection map",bldWait:"Private Buildings are drawn with the setup.",rerollBld:"Reroll Private Buildings",dams:"Neutral dams",damsTag:"1–4 players",damsHint:"One dam per area. Place it in the lower part of the marked lake; lakes are numbered from the left.",
   zone:{M:"Mountain",H:"Hill",P:"Plain"},level:n=>`Dam level ${n}`,lvShort:n=>`lvl ${n}`,
   noDams:"With 5 players no neutral dams are placed.",damsWait:"Dams are drawn together with the setup.",
   duel:"Duel map setup",footer:"Unofficial tool for Barrage. Names and trademarks belong to their owners.",
@@ -379,7 +380,7 @@ fr:{lang:"Langue",sub:"Executive Officers, nations et barrages neutres de dépar
   results:"Attributions",cert:"Concession",player:"Joueur",xo:"Executive Officer",base:"Jeu de base",
   empty:"Les concessions apparaîtront ici après le tirage.",stale:"Réglages modifiés : relancez la mise en place.",
   rerollPairs:"Retirer XO + nations",rerollDams:"Retirer les barrages neutres",copy:"Copier les résultats",copied:"Résultats copiés",copyFail:"Échec de la copie : sélectionnez le texte",
-  bld:"Bâtiments privés",bldHint:"Placez ces 5 tuiles Bâtiment privé sur le plateau de gestion supplémentaire ; remettez les autres dans la boîte.",nileReq:"Nécessite la carte The Nile Affair",bldWait:"Les bâtiments privés sont tirés avec la mise en place.",rerollBld:"Retirer les bâtiments privés",dams:"Barrages neutres",damsTag:"1–4 joueurs",damsHint:"Un barrage par zone. Placez-le dans la partie basse du lac indiqué ; les lacs sont numérotés depuis la gauche.",
+  bld:"Bâtiments privés",bldHint:"Placez ces 5 tuiles Bâtiment privé sur le plateau de gestion supplémentaire ; remettez les autres dans la boîte.",nileReq:"Nécessite la carte The Nile Affair",coloradoReq:"Nécessite la carte The Colorado Connection",bldWait:"Les bâtiments privés sont tirés avec la mise en place.",rerollBld:"Retirer les bâtiments privés",dams:"Barrages neutres",damsTag:"1–4 joueurs",damsHint:"Un barrage par zone. Placez-le dans la partie basse du lac indiqué ; les lacs sont numérotés depuis la gauche.",
   zone:{M:"Montagne",H:"Colline",P:"Plaine"},level:n=>`Barrage niveau ${n}`,lvShort:n=>`niv. ${n}`,
   noDams:"À 5 joueurs, aucun barrage neutre n’est placé.",damsWait:"Les barrages sont tirés avec la mise en place.",
   duel:"Mise en place carte Duel",footer:"Outil non officiel pour Barrage. Noms et marques appartiennent à leurs propriétaires.",
@@ -394,7 +395,7 @@ de:{lang:"Sprache",sub:"Executive Officers, Nationen und neutrale Startdämme f�
   results:"Zuteilungen",cert:"Konzession",player:"Spieler",xo:"Executive Officer",base:"Grundspiel",
   empty:"Die Konzessionen erscheinen hier nach der Auslosung.",stale:"Einstellungen geändert: startet ein neues Setup.",
   rerollPairs:"XO + Nationen neu ziehen",rerollDams:"Neutrale Dämme neu ziehen",copy:"Ergebnis kopieren",copied:"Ergebnis kopiert",copyFail:"Kopieren fehlgeschlagen: Text manuell markieren",
-  bld:"Privatgebäude",bldHint:"Legt diese 5 Privatgebäude-Plättchen auf das zusätzliche Verwaltungstableau; die übrigen kommen zurück in die Schachtel.",nileReq:"Benötigt die Karte The Nile Affair",bldWait:"Die Privatgebäude werden zusammen mit dem Setup ausgelost.",rerollBld:"Privatgebäude neu ziehen",dams:"Neutrale Dämme",damsTag:"1–4 Spieler",damsHint:"Ein Damm pro Zone. Setzt ihn in den unteren Teil des markierten Sees; die Seen sind von links nummeriert.",
+  bld:"Privatgebäude",bldHint:"Legt diese 5 Privatgebäude-Plättchen auf das zusätzliche Verwaltungstableau; die übrigen kommen zurück in die Schachtel.",nileReq:"Benötigt die Karte The Nile Affair",coloradoReq:"Benötigt die Karte The Colorado Connection",bldWait:"Die Privatgebäude werden zusammen mit dem Setup ausgelost.",rerollBld:"Privatgebäude neu ziehen",dams:"Neutrale Dämme",damsTag:"1–4 Spieler",damsHint:"Ein Damm pro Zone. Setzt ihn in den unteren Teil des markierten Sees; die Seen sind von links nummeriert.",
   zone:{M:"Berge",H:"Hügel",P:"Ebene"},level:n=>`Damm Stufe ${n}`,lvShort:n=>`Stufe ${n}`,
   noDams:"Bei 5 Spielern werden keine neutralen Dämme gesetzt.",damsWait:"Die Dämme werden zusammen mit dem Setup ausgelost.",
   duel:"Duel-Karten-Setup",footer:"Inoffizielles Hilfsmittel für Barrage. Namen und Marken gehören ihren Inhabern.",
@@ -538,7 +539,7 @@ function renderMap(){
 function renderBld(){
   const show=hasBld(); $("bld-sec").hidden=!show; if(!show)return;
   const b=S.bld;
-  $("bldgs").innerHTML=b?`<div class="bldgs${S.animBld?" dealt":""}">`+b.map((n,i)=>`<div class="bld" style="animation-delay:${i*80}ms"><span class="lv">${i+1}</span><span><b>${esc(n)}</b>${n===BLD_NILE?`<span class="req">${esc(t().nileReq)}</span>`:""}</span></div>`).join("")+`</div>`
+  $("bldgs").innerHTML=b?`<div class="bldgs${S.animBld?" dealt":""}">`+b.map((n,i)=>`<div class="bld" style="animation-delay:${i*80}ms"><span class="lv">${i+1}</span><span><b>${esc(n)}</b>${BLD_REQ[n]?`<span class="req">${esc(t()[BLD_REQ[n]])}</span>`:""}</span></div>`).join("")+`</div>`
     :`<div class="empty">${esc(t().bldWait)}</div>`;
   $("re-bld").disabled=!b;
   S.animBld=false;
@@ -571,7 +572,7 @@ function resultText(){
   const L=t();let s=`BARRAGE · Setup (${S.pairs.length})\n`;
   s+=S.pairs.map((p,i)=>`${L.player} ${i+1}: ${FLAG_EMOJI[p.nat.k]} ${L.nations[p.nat.k]} — ${p.xo.n}`).join("\n");
   if(S.dams)s+=`\n${L.dams}: `+ZONES.map((z,zi)=>`${L.zone[z]} ${z}${S.dams[zi]} (${L.lvShort(zi+1)})`).join(" · ");
-  if(S.bld)s+=`\n${L.bld}: `+S.bld.map(n=>n===BLD_NILE?`${n} (${L.nileReq})`:n).join(" · ");
+  if(S.bld)s+=`\n${L.bld}: `+S.bld.map(n=>BLD_REQ[n]?`${n} (${L[BLD_REQ[n]]})`:n).join(" · ");
   return s;
 }
 function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1800)}
