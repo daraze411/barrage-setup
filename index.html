@@ -174,6 +174,12 @@ button,select{font:inherit;color:inherit}
 .zone .zn{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
 .zone .zd{display:block;font-size:13px;color:var(--mute)}
 .zone .code{font:600 34px/1 var(--f-name);color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.bldgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.bld{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--board);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.bld .lv{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:600 16px/1 var(--f-ui);color:var(--ink);background:radial-gradient(circle,#f6ecce 58%,var(--gold) 60%);box-shadow:0 0 0 1px var(--gold-lo)}
+.bld b{font:600 20px/1.15 var(--f-name);color:var(--gold-hi)}
+.bldgs.dealt .bld{animation:bldIn .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bldIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .hint{font-size:13px;color:var(--mute);margin:0;text-wrap:pretty}
 .legend{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--mute)}
 .legend span{border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-variant-numeric:tabular-nums}
@@ -283,6 +289,15 @@ footer .orn{color:var(--gold-lo);letter-spacing:.6em;display:block;margin-bottom
   </section>
   <div class="alert" id="no-dams" hidden></div>
 
+  <section class="plate" aria-labelledby="h-bld" id="bld-sec" hidden>
+    <div class="plate-h"><h2 id="h-bld" data-t="bld"></h2><span class="aside">The Leeghwater Project</span></div>
+    <p class="hint" data-t="bldHint" style="margin-bottom:12px"></p>
+    <div id="bldgs"></div>
+    <div class="actions">
+      <button class="btn" id="re-bld" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg><span data-t="rerollBld"></span></button>
+    </div>
+  </section>
+
   <div class="duel"><b data-t="duel"></b><span class="soon">COMING SOON</span></div>
 
   <footer><span class="orn">◆ ◇ ◆</span><span data-t="footer"></span></footer>
@@ -318,6 +333,8 @@ const LAKES={
   P:[[140,840,140,950],[340,840,340,950],[550,840,550,950]]
 };
 const ZONES=["M","H","P"];
+/* Private Buildings (The Leeghwater Project): 5 of 10 drawn each game */
+const BUILDINGS=["Cofferdam","Development Office","Research Lab","Loan Agency","Energy Relay Field","Robot Factory","Financial Division","Control Station","Wind Farm","Customer Office"];
 
 /* ===== i18n ===== */
 const T={
@@ -330,7 +347,7 @@ it:{lang:"Lingua",sub:"Executive Officer, nazioni e dighe neutrali iniziali per 
   results:"Assegnazioni",cert:"Concessione",player:"Giocatore",xo:"Executive Officer",base:"Gioco base",
   empty:"Le concessioni compariranno qui dopo il sorteggio.",stale:"Impostazioni cambiate: lancia un nuovo setup.",
   rerollPairs:"Riestrai XO + nazioni",rerollDams:"Riestrai dighe neutrali",copy:"Copia risultati",copied:"Risultati copiati",copyFail:"Copia non riuscita: seleziona il testo a mano",
-  dams:"Dighe neutrali",damsTag:"1–4 giocatori",damsHint:"Una diga per fascia. Collocala nella parte bassa del lago indicato; i laghi sono numerati da sinistra.",
+  bld:"Edifici privati",bldHint:"Piazza queste 5 tessere Edificio Privato sulla plancia Azioni Aggiuntive; le altre 5 tornano nella scatola.",bldWait:"Gli edifici privati vengono estratti insieme al setup.",rerollBld:"Riestrai edifici privati",dams:"Dighe neutrali",damsTag:"1–4 giocatori",damsHint:"Una diga per fascia. Collocala nella parte bassa del lago indicato; i laghi sono numerati da sinistra.",
   zone:{M:"Montagna",H:"Collina",P:"Pianura"},level:n=>`Diga di livello ${n}`,lvShort:n=>`liv. ${n}`,
   noDams:"Con 5 giocatori non si piazzano dighe neutrali.",damsWait:"Le dighe vengono sorteggiate insieme al setup.",
   duel:"Setup mappa Duel",footer:"Strumento non ufficiale per Barrage. Nomi e marchi appartengono ai rispettivi proprietari.",
@@ -345,7 +362,7 @@ en:{lang:"Language",sub:"Executive Officers, nations and starting neutral dams f
   results:"Assignments",cert:"Concession",player:"Player",xo:"Executive Officer",base:"Base game",
   empty:"Concessions will appear here after the draw.",stale:"Settings changed: launch a new setup.",
   rerollPairs:"Reroll XO + nations",rerollDams:"Reroll neutral dams",copy:"Copy results",copied:"Results copied",copyFail:"Copy failed: select the text manually",
-  dams:"Neutral dams",damsTag:"1–4 players",damsHint:"One dam per area. Place it in the lower part of the marked lake; lakes are numbered from the left.",
+  bld:"Private Buildings",bldHint:"Place these 5 Private Building tiles on the Extra Management board; return the other 5 to the box.",bldWait:"Private Buildings are drawn with the setup.",rerollBld:"Reroll Private Buildings",dams:"Neutral dams",damsTag:"1–4 players",damsHint:"One dam per area. Place it in the lower part of the marked lake; lakes are numbered from the left.",
   zone:{M:"Mountain",H:"Hill",P:"Plain"},level:n=>`Dam level ${n}`,lvShort:n=>`lvl ${n}`,
   noDams:"With 5 players no neutral dams are placed.",damsWait:"Dams are drawn together with the setup.",
   duel:"Duel map setup",footer:"Unofficial tool for Barrage. Names and trademarks belong to their owners.",
@@ -360,7 +377,7 @@ fr:{lang:"Langue",sub:"Executive Officers, nations et barrages neutres de dépar
   results:"Attributions",cert:"Concession",player:"Joueur",xo:"Executive Officer",base:"Jeu de base",
   empty:"Les concessions apparaîtront ici après le tirage.",stale:"Réglages modifiés : relancez la mise en place.",
   rerollPairs:"Retirer XO + nations",rerollDams:"Retirer les barrages neutres",copy:"Copier les résultats",copied:"Résultats copiés",copyFail:"Échec de la copie : sélectionnez le texte",
-  dams:"Barrages neutres",damsTag:"1–4 joueurs",damsHint:"Un barrage par zone. Placez-le dans la partie basse du lac indiqué ; les lacs sont numérotés depuis la gauche.",
+  bld:"Bâtiments privés",bldHint:"Placez ces 5 tuiles Bâtiment privé sur le plateau de gestion supplémentaire ; remettez les 5 autres dans la boîte.",bldWait:"Les bâtiments privés sont tirés avec la mise en place.",rerollBld:"Retirer les bâtiments privés",dams:"Barrages neutres",damsTag:"1–4 joueurs",damsHint:"Un barrage par zone. Placez-le dans la partie basse du lac indiqué ; les lacs sont numérotés depuis la gauche.",
   zone:{M:"Montagne",H:"Colline",P:"Plaine"},level:n=>`Barrage niveau ${n}`,lvShort:n=>`niv. ${n}`,
   noDams:"À 5 joueurs, aucun barrage neutre n’est placé.",damsWait:"Les barrages sont tirés avec la mise en place.",
   duel:"Mise en place carte Duel",footer:"Outil non officiel pour Barrage. Noms et marques appartiennent à leurs propriétaires.",
@@ -375,7 +392,7 @@ de:{lang:"Sprache",sub:"Executive Officers, Nationen und neutrale Startdämme f�
   results:"Zuteilungen",cert:"Konzession",player:"Spieler",xo:"Executive Officer",base:"Grundspiel",
   empty:"Die Konzessionen erscheinen hier nach der Auslosung.",stale:"Einstellungen geändert: startet ein neues Setup.",
   rerollPairs:"XO + Nationen neu ziehen",rerollDams:"Neutrale Dämme neu ziehen",copy:"Ergebnis kopieren",copied:"Ergebnis kopiert",copyFail:"Kopieren fehlgeschlagen: Text manuell markieren",
-  dams:"Neutrale Dämme",damsTag:"1–4 Spieler",damsHint:"Ein Damm pro Zone. Setzt ihn in den unteren Teil des markierten Sees; die Seen sind von links nummeriert.",
+  bld:"Privatgebäude",bldHint:"Legt diese 5 Privatgebäude-Plättchen auf das zusätzliche Verwaltungstableau; die anderen 5 kommen zurück in die Schachtel.",bldWait:"Die Privatgebäude werden zusammen mit dem Setup ausgelost.",rerollBld:"Privatgebäude neu ziehen",dams:"Neutrale Dämme",damsTag:"1–4 Spieler",damsHint:"Ein Damm pro Zone. Setzt ihn in den unteren Teil des markierten Sees; die Seen sind von links nummeriert.",
   zone:{M:"Berge",H:"Hügel",P:"Ebene"},level:n=>`Damm Stufe ${n}`,lvShort:n=>`Stufe ${n}`,
   noDams:"Bei 5 Spielern werden keine neutralen Dämme gesetzt.",damsWait:"Die Dämme werden zusammen mit dem Setup ausgelost.",
   duel:"Duel-Karten-Setup",footer:"Inoffizielles Hilfsmittel für Barrage. Namen und Marken gehören ihren Inhabern.",
@@ -403,7 +420,7 @@ const S={
   players:Math.min(5,Math.max(1,+store.get("players",3)||3)),
   owned:new Set((store.get("owned",[])||[]).filter(k=>SRC_NAME[k])),
   phraseSet:[],phrase:null,
-  pairs:null,dams:null,stale:false,animate:false,animDams:false
+  pairs:null,dams:null,bld:null,stale:false,animate:false,animDams:false,animBld:false
 };
 const t=()=>T[S.lang];
 const $=id=>document.getElementById(id);
@@ -419,6 +436,8 @@ function drawPairs(){
   const xs=shuffle(poolXO()).slice(0,S.players), ns=shuffle(poolNat()).slice(0,S.players);
   S.pairs=xs.map((x,i)=>({xo:x,nat:ns[i]}));
 }
+function hasBld(){return S.owned.has("lp")}
+function drawBld(){S.bld=hasBld()?shuffle(BUILDINGS).slice(0,5):null}
 function drawDams(){S.dams=hasDams()?[randomInt(4)+1,randomInt(3)+1,randomInt(3)+1]:null}
 
 /* ===== Phrases ===== */
@@ -514,33 +533,43 @@ function renderMap(){
   $("re-dams").disabled=!S.pairs&&!d;
   S.animDams=false;
 }
-function renderAll(){renderStatic();renderPlayers();renderBoxes();renderPhrases();renderResults();renderMap()}
+function renderBld(){
+  const show=hasBld(); $("bld-sec").hidden=!show; if(!show)return;
+  const b=S.bld;
+  $("bldgs").innerHTML=b?`<div class="bldgs${S.animBld?" dealt":""}">`+b.map((n,i)=>`<div class="bld" style="animation-delay:${i*80}ms"><span class="lv">${i+1}</span><b>${esc(n)}</b></div>`).join("")+`</div>`
+    :`<div class="empty">${esc(t().bldWait)}</div>`;
+  $("re-bld").disabled=!b;
+  S.animBld=false;
+}
+function renderAll(){renderStatic();renderPlayers();renderBoxes();renderPhrases();renderResults();renderMap();renderBld()}
 
 /* ===== Actions ===== */
-function invalidate(){if(S.pairs||S.dams){S.pairs=null;S.dams=null;S.stale=true}}
+function invalidate(){if(S.pairs||S.dams||S.bld){S.pairs=null;S.dams=null;S.bld=null;S.stale=true}}
 function savePrefs(){store.set("players",S.players);store.set("owned",[...S.owned]);store.set("lang",S.lang)}
-function setPlayers(n){if(n===S.players)return;S.players=n;invalidate();savePrefs();renderPlayers();renderBoxes();renderPhrases();renderResults();renderMap()}
+function setPlayers(n){if(n===S.players)return;S.players=n;invalidate();savePrefs();renderPlayers();renderBoxes();renderPhrases();renderResults();renderMap();renderBld()}
 $("players").addEventListener("click",e=>{const b=e.target.closest(".pl");if(b)setPlayers(+b.dataset.n)});
 $("players").addEventListener("keydown",e=>{
   const d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key]; if(!d)return; e.preventDefault();
   const n=Math.min(5,Math.max(1,S.players+d)); setPlayers(n); $("players").querySelector(`[data-n="${n}"]`).focus();
 });
 $("boxes").addEventListener("click",e=>{const b=e.target.closest("button.box");if(!b)return;const k=b.dataset.k;
-  S.owned.has(k)?S.owned.delete(k):S.owned.add(k);invalidate();savePrefs();renderBoxes();renderPhrases();renderResults();renderMap();
+  S.owned.has(k)?S.owned.delete(k):S.owned.add(k);invalidate();savePrefs();renderBoxes();renderPhrases();renderResults();renderMap();renderBld();
   $("boxes").querySelector(`[data-k="${k}"]`).focus()});
 $("q-base").onclick=()=>{S.owned.clear();invalidate();savePrefs();renderAll()};
 $("q-all").onclick=()=>{CONTENT.forEach(c=>S.owned.add(c.k));invalidate();savePrefs();renderAll()};
 $("phrases").addEventListener("click",e=>{const b=e.target.closest(".ph");if(!b)return;S.phrase=+b.dataset.i;renderPhrases();$("phrases").querySelector(`[data-i="${S.phrase}"]`).focus()});
-$("go").onclick=()=>{if(!canDraw()||S.phrase==null)return;drawPairs();drawDams();S.stale=false;S.animate=true;S.animDams=true;renderResults();renderMap();
+$("go").onclick=()=>{if(!canDraw()||S.phrase==null)return;drawPairs();drawDams();drawBld();S.stale=false;S.animate=true;S.animDams=true;S.animBld=true;renderResults();renderMap();renderBld();
   $("res-sec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"start"})};
-$("re-pairs").onclick=()=>{if(!canDraw())return;drawPairs();if(!S.dams)drawDams(),S.animDams=true;S.animate=true;renderResults();renderMap()};
+$("re-pairs").onclick=()=>{if(!canDraw())return;drawPairs();if(!S.dams)drawDams(),S.animDams=true;if(!S.bld&&hasBld())drawBld(),S.animBld=true;S.animate=true;renderResults();renderMap();renderBld()};
 $("re-dams").onclick=()=>{drawDams();S.animDams=true;renderMap()};
+$("re-bld").onclick=()=>{drawBld();S.animBld=true;renderBld()};
 $("lang").onchange=e=>{S.lang=e.target.value;savePrefs();renderAll()};
 
 function resultText(){
   const L=t();let s=`BARRAGE · Setup (${S.pairs.length})\n`;
   s+=S.pairs.map((p,i)=>`${L.player} ${i+1}: ${FLAG_EMOJI[p.nat.k]} ${L.nations[p.nat.k]} — ${p.xo.n}`).join("\n");
   if(S.dams)s+=`\n${L.dams}: `+ZONES.map((z,zi)=>`${L.zone[z]} ${z}${S.dams[zi]} (${L.lvShort(zi+1)})`).join(" · ");
+  if(S.bld)s+=`\n${L.bld}: `+S.bld.join(" · ");
   return s;
 }
 function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),1800)}
